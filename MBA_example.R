@@ -1,4 +1,4 @@
-#following a tutorial that produces a working results. iterate from this. learn the parts I misunderstood
+#following a tutorial that produces a working results. should iterate from this. learn the parts I dont understand
 #https://datascienceplus.com/a-gentle-introduction-on-market-basket-analysis%E2%80%8A-%E2%80%8Aassociation-rules/
 
 library(tidyverse)
@@ -11,20 +11,28 @@ library(arulesViz)
 library(plyr)
 
 retail <- read_excel('Online Retail (1).xlsx')
-retail <- retail[complete.cases(retail), ] #what does complete cases do? remove null rows?
-retail %>% mutate(Description = as.factor(Description)) #why do I need to transform this into a factor? what is the effect?
-retail %>% mutate(Country = as.factor(Country)) #above
-retail$Date <- as.Date(retail$InvoiceDate) #date conversion for plotting or also for other purpose?
+retail <- retail[complete.cases(retail), ]
+#here we remove rows with any NULL values - using complete.cases on rows, and subseting the dataset
+retail %>% mutate(Description = as.factor(Description))
+#factors are just categorical values that R can understand. 
+#Instead of seemingly infinite combination of strings R now sees sets of distinct values.
+#https://www.datamentor.io/r-programming/factor/
+retail %>% mutate(Country = as.factor(Country)) 
+#same as above
+retail$Date <- as.Date(retail$InvoiceDate) 
+#if data is imported from excel or csv the dates are probably in numeric or character format.
 retail$Time <- format(retail$InvoiceDate,"%H:%M:%S")
+#you can also use custom formats once you have converted a field into datetime
 retail$InvoiceNo <- as.numeric(as.character(retail$InvoiceNo))
 glimpse(retail)
 
-retail$Time <- as.factor(retail$Time) # time into factor - what does this do?
+retail$Time <- as.factor(retail$Time)
 retail %>%
   ggplot(aes(x=Time)) + 
   geom_histogram(stat="count",fill="indianred")
 
-retail_sorted <- retail[order(retail$CustomerID),]#why order them, is is because the following transformation?
+retail_sorted <- retail[order(retail$CustomerID),] 
+#why order them, is is because the following transformation?
 library(plyr)
 #I dont understand hod ddply works, below is the tutorial description:
 #The function ddply() accepts a data frame, splits it into pieces based on one or more factors.
